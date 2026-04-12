@@ -6396,6 +6396,333 @@ Thank you,
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
+        // ========== HR MODAL FUNCTIONALITY ==========
+        let currentHRMode = null; // 'service' or 'product'
+        let currentHRQuestionIndex = 0;
+
+        const SERVICE_HR_QUESTIONS = [
+            {
+                number: 1,
+                question: "Tell me about yourself",
+                tip: "Start with your name, degree, and college. Mention 1 strong technical skill with a project example. End with why you want to join this company. Keep it under 90 seconds. Never say 'I am fun-loving' — stay professional."
+            },
+            {
+                number: 2,
+                question: "Are you okay with relocation / night shifts / bond?",
+                tip: "Always say YES immediately. Say: 'Yes, I am completely flexible and open to any location or shift requirement.' Any hesitation = instant rejection in service companies."
+            },
+            {
+                number: 3,
+                question: "Why TCS / Infosys / Wipro?",
+                tip: "Research ONE real fact. Example: 'TCS operates in 46 countries and has an excellent fresher training program through TCS iON. I want to start with a company that invests in fresher development.' Specific = credible."
+            },
+            {
+                number: 4,
+                question: "What are your strengths?",
+                tip: "Pick one that matches the job + add evidence. 'I am a quick learner — I picked up React and built a working project in 3 weeks.' Evidence makes it real."
+            },
+            {
+                number: 5,
+                question: "What is your weakness?",
+                tip: "Pick a real one you are improving. 'I sometimes over-engineer solutions. I now set a 2-hour limit before reviewing with a peer.' Never say 'I am a perfectionist.'"
+            },
+            {
+                number: 6,
+                question: "Where do you see yourself in 5 years?",
+                tip: "Say you see yourself growing WITHIN this company into a senior or lead role. Never mention MBA, startup, or switching companies — it signals you will leave."
+            },
+            {
+                number: 7,
+                question: "Why should we hire you?",
+                tip: "Skill + Proof + Motivation. 'I have [skill], proven by [project/result], and I am motivated by [specific company reason].' Three parts always."
+            },
+            {
+                number: 8,
+                question: "Tell me about a project you built",
+                tip: "Problem → Solution → Tech stack → Result → What you learned. Prepare this for your 2-3 best projects until you can say it in 60 seconds."
+            },
+            {
+                number: 9,
+                question: "How do you handle pressure?",
+                tip: "Give a REAL example. 'During finals week I had exams + project deadline + hackathon. I made a daily priority list, worked in 2-hour blocks, submitted everything on time. Pressure sharpens my focus when I plan ahead.'"
+            },
+            {
+                number: 10,
+                question: "Are you a team player or independent worker?",
+                tip: "Never pick only one. 'I adapt based on the situation. Collaborative for design and debugging. Independent for focused coding. Best engineers know when to do each.'"
+            },
+            {
+                number: 11,
+                question: "What do you know about our company?",
+                tip: "Research founding year, revenue, major clients, recent news. 'Infosys was founded in 1981, serves clients in 50 countries, and recently expanded its AI services division.' One real fact impresses more than generic praise."
+            },
+            {
+                number: 12,
+                question: "What is your expected salary?",
+                tip: "For freshers say: 'I am aware of the standard CTC for this role and completely okay with it. I am focused on learning at this stage.' Never quote a number unless they insist."
+            },
+            {
+                number: 13,
+                question: "Do you have any questions for me?",
+                tip: "Always have 2 questions ready. Good ones: 'What does success look like in the first 6 months?' and 'What is the training process for freshers?' Never ask about salary or WFH in round 1."
+            },
+            {
+                number: 14,
+                question: "Describe yourself in 3 words",
+                tip: "Pick words that are professional + different. 'Curious, reliable, and solution-oriented.' Then give one-line evidence for each word. Avoid: 'hardworking, dedicated, passionate' — every candidate says these."
+            },
+            {
+                number: 15,
+                question: "Are you open to working in different technologies?",
+                tip: "Always yes. 'Absolutely. I believe a strong foundation in fundamentals makes learning any new technology easier. I am comfortable switching stacks based on project needs.'"
+            }
+        ];
+
+        const PRODUCT_HR_QUESTIONS = [
+            {
+                number: 1,
+                question: "Tell me about a time you failed",
+                lp: "Ownership + Learn and Be Curious",
+                tip: "Never say you never failed. Structure: 'In [project], I [specific failure]. Consequence was [impact]. I learned [lesson]. I changed [specific action]. Result improved to [outcome].' Self-awareness beats perfection every time."
+            },
+            {
+                number: 2,
+                question: "Describe a time you showed ownership beyond your role",
+                lp: "Ownership",
+                tip: "STAR format. Find a real example where you did something extra without being asked — fixed a bug in someone else's code, documented something for the whole team, stayed late to help a teammate. 'We' kills this answer — always say 'I'."
+            },
+            {
+                number: 3,
+                question: "Tell me about a time you had to make a fast decision with limited info",
+                lp: "Bias for Action",
+                tip: "Show you can act decisively. 'I had 24 hours to submit our hackathon project. The API we planned to use went down. I immediately switched to a backup plan, assigned tasks, and we submitted on time. We placed 3rd out of 40 teams.'"
+            },
+            {
+                number: 4,
+                question: "Describe a conflict with a teammate and how you resolved it",
+                lp: "Earn Trust",
+                tip: "Never say you avoid conflict. 'We disagreed about [specific thing]. I requested a 1:1, listened to their reasoning first, shared my view with data, and we agreed on [compromise]. Result was [outcome].' Show maturity, not avoidance."
+            },
+            {
+                number: 5,
+                question: "Tell me about your biggest achievement",
+                lp: "Deliver Results",
+                tip: "Quantify everything. Weak: 'I built a good project.' Strong: 'I built a system that reduced resolution time for 200 students from 7 days to 24 hours, built in 3 weeks, with 85% adoption in the first month.' Numbers = credibility."
+            },
+            {
+                number: 6,
+                question: "Why Amazon / Google / Flipkart?",
+                lp: "Customer Obsession",
+                tip: "Show personal connection to their product. 'I have used Amazon's recommendation engine as a customer and want to build those systems. The scale of impact — 300M customers — drives me here specifically.' Generic answers fail here."
+            },
+            {
+                number: 7,
+                question: "How do you handle a disagreement with your manager?",
+                lp: "Have Backbone; Disagree and Commit",
+                tip: "Show you speak up AND commit once decided. 'I would clearly share my data-backed reasoning. If they still decide differently, I commit fully to the decision and make it succeed. I disagree once, loudly, then execute 100%.'"
+            },
+            {
+                number: 8,
+                question: "Tell me about a time you simplified something complex",
+                lp: "Invent and Simplify",
+                tip: "Find a real example — simplified a process, reduced steps in a workflow, wrote cleaner code that replaced 200 lines with 30. Show you default to simple over clever."
+            },
+            {
+                number: 9,
+                question: "Describe a time you went deep into a problem others missed",
+                lp: "Dive Deep",
+                tip: "Show curiosity and rigor. 'During testing, I noticed an edge case no one had caught. I traced it through 5 layers of the codebase, found a race condition, fixed it before release. It would have affected 20% of users in production.'"
+            },
+            {
+                number: 10,
+                question: "Tell me about a time you had a high bar and held it",
+                lp: "Insist on Highest Standards",
+                tip: "Show you don't accept 'good enough.' 'In our group project, I pushed the team to refactor our code before submission even though it already worked. The cleaner version was 40% faster and got us extra points in review.'"
+            },
+            {
+                number: 11,
+                question: "How do you handle feedback you disagree with?",
+                lp: "Earn Trust + Learn",
+                tip: "Show openness without being a pushover. 'I listen fully first without interrupting. Then I ask clarifying questions to understand the reasoning. If I still disagree, I share my perspective with data. But I keep an open mind that I might be wrong.'"
+            },
+            {
+                number: 12,
+                question: "Tell me about a time you had to learn something fast",
+                lp: "Learn and Be Curious",
+                tip: "Show speed + method. 'I had 1 week to learn Docker for our deployment. I spent 3 hours on documentation, 3 hours on a hands-on tutorial, then built our actual deployment. It worked in production on the first try.'"
+            },
+            {
+                number: 13,
+                question: "Describe a time you took a calculated risk",
+                lp: "Bias for Action",
+                tip: "Show risk assessment + action. 'I chose to rebuild our project database schema 2 days before submission because the old one wouldn't scale. I assessed the risk, made the change in 6 hours with a backup plan ready. It worked and improved our query speed by 3x.'"
+            },
+            {
+                number: 14,
+                question: "How do you prioritize when everything is urgent?",
+                lp: "Deliver Results",
+                tip: "Show a framework. 'I list all tasks, estimate impact and effort for each, then prioritize high-impact-low-effort first. I communicate clearly about what will be delayed if needed. I never silently miss a deadline.'"
+            },
+            {
+                number: 15,
+                question: "Do you have any questions for me?",
+                lp: "Any LP",
+                tip: "Must ask 2 questions. Best ones: 'What does the biggest growth opportunity look like for someone in this role in year 1?' and 'What separates the good engineers from the great ones on your team?' Never ask about salary, equity, or perks in HR round."
+            }
+        ];
+
+        function openHRModal() {
+            document.getElementById('hr-modal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeHRModal() {
+            document.getElementById('hr-modal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeHRPanel() {
+            document.getElementById('hr-questions-panel').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function startServiceHRPractice() {
+            currentHRMode = 'service';
+            currentHRQuestionIndex = 0;
+            closeHRModal();
+            displayHRQuestions(SERVICE_HR_QUESTIONS, 'Service-Based Companies (TCS, Infosys, Wipro)');
+        }
+
+        function startProductHRPractice() {
+            currentHRMode = 'product';
+            currentHRQuestionIndex = 0;
+            closeHRModal();
+            displayHRQuestions(PRODUCT_HR_QUESTIONS, 'Product-Based Companies (Amazon, Google, Flipkart)');
+        }
+
+        function displayHRQuestions(questions, title) {
+            document.getElementById('hr-panel-title').textContent = title;
+            const panel = document.getElementById('hr-questions-panel');
+            panel.style.display = 'block';
+            window.scrollTo({ top: panel.offsetTop - 100, behavior: 'smooth' });
+            showHRQuestion(questions, currentHRQuestionIndex);
+        }
+
+        function showHRQuestion(questions, index) {
+            const container = document.getElementById('hr-questions-list');
+            const q = questions[index];
+
+            if (index === questions.length) {
+                // Show completion card
+                container.innerHTML = `
+                    <div class="completion-card">
+                        <div class="completion-heading">🎉 Practice Complete!</div>
+                        <div class="completion-text">
+                            You've reviewed all 15 ${currentHRMode === 'service' ? 'Service-Based' : 'Product-Based'} HR questions.
+                        </div>
+                        <div class="completion-tip">
+                            💡 <strong>Next step:</strong> Now practice saying each answer OUT LOUD. Record yourself once and listen back. Your tone, pace, and confidence matter more than perfect words.
+                        </div>
+                        <button class="btn-practice-again" onclick="resetHRPractice()">Practice Again</button>
+                    </div>
+                `;
+                updateHRProgressIndicator(questions.length, questions.length);
+                document.getElementById('btn-prev-hr').disabled = true;
+                document.getElementById('btn-next-hr').disabled = true;
+                return;
+            }
+
+            let html = `
+                <div class="hr-question-card">
+                    <div class="question-number">Q${q.number}</div>
+            `;
+
+            if (q.lp) {
+                html += `<div class="question-lp-tag">${q.lp}</div>`;
+            }
+
+            html += `
+                    <div class="question-text">${q.question}</div>
+                    <button class="show-answer-btn" onclick="toggleAnswer(${index})">Show Sample Answer</button>
+                    <div class="answer-box" id="answer-${index}">
+                        <div class="answer-text">${q.tip}</div>
+                        <button class="hide-answer-btn" onclick="toggleAnswer(${index})">Hide Answer</button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            updateHRProgressIndicator(index + 1, questions.length);
+            document.getElementById('btn-prev-hr').disabled = index === 0;
+            document.getElementById('btn-next-hr').disabled = false;
+        }
+
+        function toggleAnswer(index) {
+            const box = document.getElementById(`answer-${index}`);
+            box.classList.toggle('show');
+        }
+
+        function nextHRQuestion() {
+            const questions = currentHRMode === 'service' ? SERVICE_HR_QUESTIONS : PRODUCT_HR_QUESTIONS;
+            if (currentHRQuestionIndex < questions.length) {
+                currentHRQuestionIndex++;
+                showHRQuestion(questions, currentHRQuestionIndex);
+                window.scrollTo({ top: document.getElementById('hr-questions-panel').offsetTop - 100, behavior: 'smooth' });
+            }
+        }
+
+        function previousHRQuestion() {
+            const questions = currentHRMode === 'service' ? SERVICE_HR_QUESTIONS : PRODUCT_HR_QUESTIONS;
+            if (currentHRQuestionIndex > 0) {
+                currentHRQuestionIndex--;
+                showHRQuestion(questions, currentHRQuestionIndex);
+                window.scrollTo({ top: document.getElementById('hr-questions-panel').offsetTop - 100, behavior: 'smooth' });
+            }
+        }
+
+        function resetHRPractice() {
+            currentHRQuestionIndex = 0;
+            const questions = currentHRMode === 'service' ? SERVICE_HR_QUESTIONS : PRODUCT_HR_QUESTIONS;
+            showHRQuestion(questions, 0);
+            window.scrollTo({ top: document.getElementById('hr-questions-panel').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function updateHRProgressIndicator(current, total) {
+            document.getElementById('question-progress').textContent = current === total ? `All ${total} questions completed!` : `Question ${current} of ${total}`;
+        }
+
+        // Close modal on outside click
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('hr-modal');
+            const overlay = document.querySelector('.modal-overlay');
+            if (e.target === overlay) {
+                closeHRModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeHRModal();
+            }
+        });
+
+        // Keyboard navigation for HR questions
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('hr-questions-panel').style.display === 'block') {
+                if (e.key === 'ArrowLeft') previousHRQuestion();
+                if (e.key === 'ArrowRight') nextHRQuestion();
+            }
+        });
+
+        // Find and update the HR Round Practice button event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const hrButton = document.querySelector('[data-tab="hr-practice"]');
+            if (hrButton) {
+                hrButton.addEventListener('click', openHRModal);
+            }
+        });
+
         // ========== DSA QUESTIONS DATA ==========
         const DSA_QUESTIONS = [
   {id:"arrays_1",topic:"Arrays",number:"Q01",difficulty:"Easy",companies:["TCS","Infosys"],question:"Find the largest and smallest element in an array",insight:"Traverse the array once maintaining two variables max and min. Update each as you iterate through every element.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"},{id:"arrays_2",topic:"Arrays",number:"Q02",difficulty:"Easy",companies:["TCS","Wipro"],question:"Reverse an array in place",insight:"Use two pointers — one at start, one at end. Swap elements and move pointers toward each other until they meet.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/reverse-string/"},{id:"arrays_3",topic:"Arrays",number:"Q03",difficulty:"Easy",companies:["TCS","Infosys"],question:"Remove duplicates from a sorted array",insight:"Two pointer approach. One pointer tracks position for next unique element, other scans ahead.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/remove-duplicates-from-sorted-array/"},{id:"arrays_4",topic:"Arrays",number:"Q04",difficulty:"Easy",companies:["TCS","Wipro"],question:"Check if an array is sorted in ascending order",insight:"Traverse and compare each adjacent pair. If any pair is out of order, return false immediately.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/"},{id:"arrays_5",topic:"Arrays",number:"Q05",difficulty:"Easy",companies:["Infosys","Wipro"],question:"Find the second largest element in an array",insight:"Single pass maintaining two variables: largest and second largest. Update carefully when new largest found.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/second-largest-digit-in-a-string/"},{id:"arrays_6",topic:"Arrays",number:"Q06",difficulty:"Easy",companies:["TCS","Infosys"],question:"Move all zeroes to the end of the array",insight:"Two pointer — one tracking next non-zero position. Swap non-zero elements forward, fill rest with zeros.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/move-zeroes/"},{id:"arrays_7",topic:"Arrays",number:"Q07",difficulty:"Easy",companies:["TCS","Wipro"],question:"Find the missing number in an array of 1 to N",insight:"Expected sum = N*(N+1)/2. Subtract the actual array sum. The difference is the missing number.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/missing-number/"},{id:"arrays_8",topic:"Arrays",number:"Q08",difficulty:"Medium",companies:["Amazon","Microsoft"],question:"Two Sum — find indices of two numbers that add up to target",insight:"Use a HashMap. For each element store it. Check if (target - current element) already exists in the map.",time:"O(n)",space:"O(n)",leetcode:"https://leetcode.com/problems/two-sum/"},{id:"arrays_9",topic:"Arrays",number:"Q09",difficulty:"Medium",companies:["Amazon","Flipkart"],question:"Maximum subarray sum — Kadane's Algorithm",insight:"Track current sum and global max. Reset current sum to 0 whenever it becomes negative. Simple and elegant.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/maximum-subarray/"},{id:"arrays_10",topic:"Arrays",number:"Q10",difficulty:"Medium",companies:["TCS","Infosys"],question:"Rotate an array by K positions to the right",insight:"Three-step reversal: reverse entire array, reverse first K elements, reverse remaining elements.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/rotate-array/"},{id:"arrays_11",topic:"Arrays",number:"Q11",difficulty:"Medium",companies:["Amazon","Google"],question:"Best time to buy and sell stock for maximum profit",insight:"Track minimum price seen so far. At each step calculate profit if sold today. Track global maximum profit.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"},{id:"arrays_12",topic:"Arrays",number:"Q12",difficulty:"Medium",companies:["Google","Microsoft"],question:"Find the majority element that appears more than N/2 times",insight:"Boyer-Moore voting algorithm. Cancel out different elements. The last surviving candidate is the majority.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/majority-element/"},{id:"arrays_13",topic:"Arrays",number:"Q13",difficulty:"Medium",companies:["Amazon","Microsoft"],question:"Merge two sorted arrays without using extra space",insight:"Start filling from the end of the larger array. Compare elements from both ends and place the larger one.",time:"O(m+n)",space:"O(1)",leetcode:"https://leetcode.com/problems/merge-sorted-array/"},{id:"arrays_14",topic:"Arrays",number:"Q14",difficulty:"Medium",companies:["Amazon","Flipkart"],question:"Find the duplicate number in array containing values 1 to N",insight:"Floyd cycle detection treating array as linked list. Or XOR all indices and values — duplicates cancel out.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/find-the-duplicate-number/"},{id:"arrays_15",topic:"Arrays",number:"Q15",difficulty:"Medium",companies:["Google","Amazon"],question:"Product of array except self — without division operator",insight:"Two pass approach. Left pass: prefix products. Right pass: suffix products. Multiply both for each position.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/product-of-array-except-self/"},{id:"arrays_16",topic:"Arrays",number:"Q16",difficulty:"Medium",companies:["Microsoft","Google"],question:"Container with most water using two pointers",insight:"Two pointers from both ends. Always move the pointer with the smaller height inward to potentially find more water.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/container-with-most-water/"},{id:"arrays_17",topic:"Arrays",number:"Q17",difficulty:"Medium",companies:["Amazon","Flipkart"],question:"Sort an array of 0s, 1s, and 2s — Dutch National Flag",insight:"Three pointers: low, mid, high. Elements before low are 0s, after high are 2s, between are 1s.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/sort-colors/"},{id:"arrays_18",topic:"Arrays",number:"Q18",difficulty:"Medium",companies:["Google","Microsoft"],question:"Find all pairs with given sum in an unsorted array",insight:"Sort the array then use two pointers from both ends. For unsorted, use a HashSet to track complements.",time:"O(n log n)",space:"O(1)",leetcode:"https://leetcode.com/problems/two-sum/"},{id:"arrays_19",topic:"Arrays",number:"Q19",difficulty:"Hard",companies:["Google","Amazon"],question:"Trapping rainwater — calculate water trapped between bars",insight:"For each position, trapped water = min(maxLeft, maxRight) - height[i]. Use two pointer approach to avoid extra space.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/trapping-rain-water/"},{id:"arrays_20",topic:"Arrays",number:"Q20",difficulty:"Hard",companies:["Amazon","Google"],question:"3Sum — find all unique triplets that sum to zero",insight:"Sort array. Fix one element, use two pointers for the remaining pair. Skip duplicates carefully at each level.",time:"O(n²)",space:"O(1)",leetcode:"https://leetcode.com/problems/3sum/"},{id:"arrays_21",topic:"Arrays",number:"Q21",difficulty:"Hard",companies:["Google","Microsoft"],question:"Sliding window maximum — max in every window of size K",insight:"Monotonic deque storing indices of useful elements. Remove elements outside window and smaller elements from back.",time:"O(n)",space:"O(k)",leetcode:"https://leetcode.com/problems/sliding-window-maximum/"},{id:"arrays_22",topic:"Arrays",number:"Q22",difficulty:"Hard",companies:["Amazon","Google"],question:"Median of two sorted arrays in O(log n) time",insight:"Binary search on the smaller array to find the correct partition point where left halves combined have the median.",time:"O(log(min(m,n)))",space:"O(1)",leetcode:"https://leetcode.com/problems/median-of-two-sorted-arrays/"},{id:"arrays_23",topic:"Arrays",number:"Q23",difficulty:"Hard",companies:["Google","Microsoft"],question:"Longest consecutive sequence in O(n) time",insight:"Add all elements to HashSet. For each element start counting only if element-1 is NOT in set — avoids reprocessing.",time:"O(n)",space:"O(n)",leetcode:"https://leetcode.com/problems/longest-consecutive-sequence/"},{id:"arrays_24",topic:"Arrays",number:"Q24",difficulty:"Hard",companies:["Amazon","Google"],question:"Next permutation — rearrange to next lexicographically greater order",insight:"Find rightmost ascending adjacent pair. Find next larger from right. Swap them. Reverse the suffix.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/next-permutation/"},{id:"arrays_25",topic:"Arrays",number:"Q25",difficulty:"Hard",companies:["Google","Microsoft"],question:"First missing positive integer in O(n) time and O(1) space",insight:"Rearrange array so value i goes to index i-1. Then find first index where value does not match expected.",time:"O(n)",space:"O(1)",leetcode:"https://leetcode.com/problems/first-missing-positive/"},
@@ -7552,5 +7879,9 @@ Thank you,
                 initMockInterview();
             }
         });
-    </script>
+        </script>
+        <script type="module" src="js/app.js"></script>
+        <script src="hr-modal.js"></script>
+    </body>
+    </html>
 
