@@ -8,6 +8,7 @@
     <meta property="og:description" content="Your complete 6-month roadmap to IT placement. Master the 4 pillars: Domain Depth, Real Projects, English, and Visibility.">
     <title>PrepPath — From Zero to Placed | IT Career Roadmap for CS Students</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -5088,7 +5089,7 @@
             <li><a href="#visibility">Visibility</a></li>
             <li><a href="#plan">6-Month Plan</a></li>
         </ul>
-        <button class="btn-start">Start Your Journey</button>
+        <button id="start-journey-btn" class="btn-start">Start Your Journey</button>
         <button class="hamburger">
             <span></span>
             <span></span>
@@ -6348,6 +6349,88 @@ Thank you,
         <div class="roadmap-download">
             <button class="download-button">Download This Roadmap</button>
         </div>
+    </section>
+
+    <!-- PROGRESS DASHBOARD SECTION -->
+    <section id="dashboard" style="padding: 80px 20px; background: #f8f7ff;">
+      <div style="max-width: 1100px; margin: 0 auto;">
+        
+        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">
+          📊 Your Progress Dashboard
+        </h2>
+        <p style="color: #666; margin-bottom: 40px; font-size: 1rem;">
+          Everything you have done, tracked in one place.
+        </p>
+
+        <!-- 4 stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px;">
+          
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <div style="font-size: 13px; color: #888; margin-bottom: 6px;">DSA Solved</div>
+            <div id="dash-dsa" style="font-size: 32px; font-weight: 700; color: #6C63FF;">0</div>
+            <div style="font-size: 12px; color: #aaa;">out of 250 questions</div>
+          </div>
+
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <div style="font-size: 13px; color: #888; margin-bottom: 6px;">Mock Sessions</div>
+            <div id="dash-sessions" style="font-size: 32px; font-weight: 700; color: #6C63FF;">0</div>
+            <div style="font-size: 12px; color: #aaa;">interviews practiced</div>
+          </div>
+
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <div style="font-size: 13px; color: #888; margin-bottom: 6px;">HR Questions</div>
+            <div id="dash-hr" style="font-size: 32px; font-weight: 700; color: #6C63FF;">0</div>
+            <div style="font-size: 12px; color: #aaa;">out of 30 practiced</div>
+          </div>
+
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <div style="font-size: 13px; color: #888; margin-bottom: 6px;">Current Streak</div>
+            <div id="dash-streak" style="font-size: 32px; font-weight: 700; color: #6C63FF;">0</div>
+            <div style="font-size: 12px; color: #aaa;">days in a row</div>
+          </div>
+
+        </div>
+
+        <!-- Two charts side by side -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px;">
+          
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <h3 style="font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 20px;">
+              DSA Progress by Topic
+            </h3>
+            <canvas id="dsaTopicChart" height="260"></canvas>
+          </div>
+
+          <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff;">
+            <h3 style="font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 20px;">
+              Mock Interview Scores Over Time
+            </h3>
+            <canvas id="sessionChart" height="260"></canvas>
+          </div>
+
+        </div>
+
+        <!-- Weekly activity heatmap -->
+        <div style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e8e4ff; margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 20px;">
+            30-Day Activity — Problems Solved Per Day
+          </h3>
+          <canvas id="activityChart" height="100"></canvas>
+        </div>
+
+        <!-- Placement readiness score -->
+        <div style="background: linear-gradient(135deg, #6C63FF, #4ecdc4); border-radius: 16px; padding: 32px; color: white; text-align: center;">
+          <div style="font-size: 13px; opacity: 0.85; margin-bottom: 8px;">Overall Placement Readiness</div>
+          <div id="dash-readiness" style="font-size: 56px; font-weight: 700; line-height: 1;">0%</div>
+          <div id="dash-readiness-label" style="font-size: 14px; opacity: 0.85; margin-top: 8px;">
+            Start solving questions to see your score
+          </div>
+          <div style="margin-top: 20px; background: rgba(255,255,255,0.2); border-radius: 8px; height: 8px; overflow: hidden;">
+            <div id="dash-readiness-bar" style="height: 100%; background: white; border-radius: 8px; width: 0%; transition: width 1s ease;"></div>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <!-- FOOTER -->
@@ -7880,8 +7963,462 @@ Thank you,
             }
         });
         </script>
+        <!-- ...existing scripts... -->
+        <script>
+        // ========== TRACK ROADMAP FUNCTIONALITY ==========
+        const FULLSTACK_ROADMAP = {
+            month1: {
+                title: "HTML + CSS + Git Basics",
+                subtitle: "Foundation of web development",
+                weeks: [
+                    {
+                        number: "Week 1",
+                        title: "HTML Foundations (Structure of the web)",
+                        topics: "HTML boilerplate, Headings h1–h6, p/div/span, Lists (ul/ol/li), Links & images, Forms & inputs, Semantic tags (header/nav/main/footer), VS Code setup, Live Server extension",
+                        project: "Personal bio page — naam, photo, about me, contact form (no CSS yet)",
+                        resources: [
+                            { text: "CodeWithHarry — HTML full course (YouTube, Hindi)", url: "#" },
+                            { text: "freeCodeCamp — Responsive Web Design, first 20 lessons", url: "#" },
+                            { text: "MDN HTML reference — har tag ke liye", url: "#" }
+                        ],
+                        tip: "Pehle din sirf structure banao. HTML = skeleton, CSS = kapde. Ek bhi CSS line mat likho is week mein.",
+                        schedule: [
+                            { time: "30 min", desc: "Revision — HTML tags kichod dikha ho vo dobara banao (notes nahi, code)" },
+                            { time: "1.5 hr", desc: "New concept — ek tag seekhna (jaise forms) at depth" },
+                            { time: "1.5 hr", desc: "Hands-on — khud website structure banao (no copy-paste)" },
+                            { time: "30 min", desc: "GitHub commit — code push + aaj kya seekha" }
+                        ],
+                        doList: ["Rozana ek HTML element seekho", "DevTools inspect karo", "MDN docs padhna", "Daily GitHub commit"],
+                        avoidList: ["CSS abhi nahi", "JavaScript nahi", "Copy-paste code", "Multiple courses saath mein"],
+                        selfCheck: [
+                            "Kya bina dekhe HTML boilerplate likh sakta hoon?",
+                            "Kya semantic tags samajhta hoon aur kab use karte hain?",
+                            "Kya GitHub mein daily commit kar raha hoon?"
+                        ]
+                    },
+                    {
+                        number: "Week 2",
+                        title: "CSS Basics (Colors, fonts, box model)",
+                        topics: "Selectors & specificity, Colors & backgrounds, Typography, Box model (margin/padding/border), Width & height, Display (block/inline), CSS variables, Google Fonts",
+                        project: "Week 1 ki bio page ko style karo — same HTML, sirf CSS add karo",
+                        resources: [
+                            { text: "Apna College — CSS playlist (YouTube, Hindi)", url: "#" },
+                            { text: "CSS-Tricks — A Complete Guide to Flexbox", url: "#" },
+                            { text: "Kevin Powell — CSS for beginners (YouTube)", url: "#" }
+                        ],
+                        tip: "Box model is the most important concept. DevTools (F12) mein box model visualizer zaroor dekho.",
+                        schedule: [
+                            { time: "30 min", desc: "Revision — kal likha CSS dobara likh" },
+                            { time: "1.5 hr", desc: "New concept — Ek CSS property deeply seekhna" },
+                            { time: "1.5 hr", desc: "Hands-on — khud design karo" },
+                            { time: "30 min", desc: "GitHub commit — progress push karo" }
+                        ],
+                        doList: ["Box model samajhna", "DevTools ke box model visualizer dekho", "Google Fonts use karo", "Responsive fonts"],
+                        avoidList: ["Bootstrap abhi nahi", "Tailwind nahi", "Copy designs without understanding", "Hardcoded colors"],
+                        selfCheck: [
+                            "Kya box model samajhta hoon aur DevTools mein dekh sakta hoon?",
+                            "Kya selector specificity samajhta hoon?",
+                            "Kya CSS variables banaa sakta hoon?"
+                        ]
+                    },
+                    {
+                        number: "Week 3",
+                        title: "Flexbox + Grid (Layout master)",
+                        topics: "display:flex, justify-content, align-items, flex-wrap, display:grid, grid-template-columns, gap, grid-area, Navbar layout, Card grid",
+                        project: "Netflix/Zomato-jaisi card grid — navbar + hero section + 6 cards grid",
+                        resources: [
+                            { text: "Flexbox Froggy — flexboxfroggy.com (game, must play)", url: "#" },
+                            { text: "Grid Garden — cssgridgarden.com (game, must play)", url: "#" },
+                            { text: "Kevin Powell — Flexbox vs Grid (YouTube)", url: "#" }
+                        ],
+                        tip: "Pehle Flexbox Froggy complete karo (1 hour), phir Grid Garden. Games ke through seekhna sab clear ho jaata hai.",
+                        schedule: [
+                            { time: "30 min", desc: "Flexbox Froggy ya Grid Garden khelo" },
+                            { time: "1.5 hr", desc: "Concept video dekho — Flexbox deeply" },
+                            { time: "1.5 hr", desc: "Hands-on — nav aur card grid banao" },
+                            { time: "30 min", desc: "GitHub commit" }
+                        ],
+                        doList: ["Flexbox Froggy complete karo", "Grid Garden complete karo", "Netflix-style layout banao", "Responsive design"],
+                        avoidList: ["Bootstrap grid", "Float layouts", "Absolute positioning for layout", "Skipping games"],
+                        selfCheck: [
+                            "Kya sirf Flexbox se navbar bana sakta hoon?",
+                            "Kya Grid samajhta hoon aur card grid bana sakta hoon?",
+                            "Kya mobile-responsive layout bana sakta hoon?"
+                        ]
+                    },
+                    {
+                        number: "Week 4",
+                        title: "Responsive Design + Git + Final Project",
+                        topics: "Media queries, Mobile-first approach, Viewport meta tag, CSS transitions, Hover effects, Git init/add/commit, GitHub repo, GitHub Pages deploy",
+                        project: "Portfolio website — Home, About, Projects, Contact pages. GitHub Pages pe live karo. Ye link resume mein daalo.",
+                        resources: [
+                            { text: "freeCodeCamp — Responsive Web Design cert (finish it)", url: "#" },
+                            { text: "Git & GitHub crash course — Traversy Media (YouTube)", url: "#" },
+                            { text: "GitHub Pages docs", url: "#" }
+                        ],
+                        tip: "Mobile-first likhna start karo. GitHub pe daily commit karo. Portfolio link resume mein zaroor ho.",
+                        schedule: [
+                            { time: "30 min", desc: "GitHub Pages setup kar" },
+                            { time: "2 hr", desc: "Portfolio website banao (4 pages)" },
+                            { time: "1 hr", desc: "Media queries add karo (mobile responsive)" },
+                            { time: "30 min", desc: "Deploy karo aur commit karo" }
+                        ],
+                        doList: ["Mobile-first approach", "Media queries sahi tarike se", "GitHub Pages deploy", "Portfolio link resume mein"],
+                        avoidList: ["Desktop-first approach", "Too many breakpoints", "Forgetting viewport meta tag", "Not testing on mobile"],
+                        selfCheck: [
+                            "Kya mera portfolio GitHub Pages pe live hai?",
+                            "Kya mobile mein bhi acha lag raha hai?",
+                            "Kya GitHub commit history clean hai?"
+                        ]
+                    }
+                ]
+            },
+            month2: {
+                title: "JavaScript (Core to Advanced)",
+                subtitle: "Learn the language of the web",
+                weeks: [
+                    {
+                        number: "Full Month",
+                        title: "JavaScript Fundamentals to Advanced",
+                        topics: "Variables/loops/functions, DOM Manipulation, Events, ES6+ (arrow functions, spread), Promises + async/await, Fetch API, Local Storage, OOP basics, Closures, Hoisting, Event loop, this keyword",
+                        project: "Weather App (OpenWeather API), To-Do list with localStorage, Quiz App",
+                        resources: [
+                            { text: "javascript.info — best free resource (English)", url: "#" },
+                            { text: "Namaste JavaScript — Akshay Saini (YouTube, Hindi) — MUST WATCH", url: "#" },
+                            { text: "Chai aur Code — Hitesh Choudhary (YouTube, Hindi)", url: "#" },
+                            { text: "freeCodeCamp JS Algorithms course", url: "#" }
+                        ],
+                        tip: "Namaste JavaScript series must-watch — closures, event loop, async JS ekdum clear ho jaayega. Rozana ek concept, ek chhota project.",
+                        schedule: [
+                            { time: "30 min", desc: "Previous concept revise kar" },
+                            { time: "1.5 hr", desc: "Ek concept deeply seekh (Namaste JS dekh)" },
+                            { time: "2 hr", desc: "Hands-on — mini project banao" },
+                            { time: "30 min", desc: "GitHub commit" }
+                        ],
+                        doList: ["Namaste JavaScript dekha (closures aur event loop)", "Rozana ek concept, ek mini project", "Fetch API practice", "Async/await samajhna"],
+                        avoidList: ["jQuery (outdated)", "Not understanding callbacks", "Skipping closures", "Copy-pasting code"],
+                        selfCheck: [
+                            "Kya closures samajh gaya?",
+                            "Kya Fetch API use kar sakta hoon?",
+                            "Kya async/await ke saath handle kar sakta hoon?"
+                        ]
+                    }
+                ]
+            },
+            month3: {
+                title: "React.js (Frontend Framework)",
+                subtitle: "Build modern interactive UIs",
+                weeks: [
+                    {
+                        number: "Full Month",
+                        title: "React Fundamentals to Advanced",
+                        topics: "JSX, Components & Props, useState/useEffect, React Router, useContext, Custom Hooks, API calls in React, Tailwind CSS, Component thinking",
+                        project: "Movie Search App (TMDB API), Blog frontend, E-commerce product listing with cart",
+                        resources: [
+                            { text: "react.dev — official docs (best)", url: "#" },
+                            { text: "Chai aur Code React playlist (Hindi)", url: "#" },
+                            { text: "Scrimba React course (interactive, free)", url: "#" },
+                            { text: "The Odin Project — React section", url: "#" }
+                        ],
+                        tip: "Tic-tac-toe tutorial ek baar zaroor karo. State management samajhna sabse important hai is month mein.",
+                        schedule: [
+                            { time: "30 min", desc: "Previous concept revise" },
+                            { time: "1.5 hr", desc: "React concept seekh (useState, useEffect)" },
+                            { time: "2 hr", desc: "Component bana, API call, state manage" },
+                            { time: "30 min", desc: "GitHub commit" }
+                        ],
+                        doList: ["React official tutorial complete karo", "Component thinking seekhna", "Props drilling samajhna", "useContext use karo"],
+                        avoidList: ["Too many state variables", "Prop drilling instead of context", "Not using custom hooks", "Class components (unless needed)"],
+                        selfCheck: [
+                            "Kya functional components acha banana aata hai?",
+                            "Kya useEffect samajh gaya?",
+                            "Kya API call ka form movie app bana sakta hoon?"
+                        ]
+                    }
+                ]
+            },
+            month4: {
+                title: "Node.js + Express (Backend)",
+                subtitle: "Build server-side applications",
+                weeks: [
+                    {
+                        number: "Full Month",
+                        title: "Backend Development with Node & Express",
+                        topics: "Node.js basics, Express.js, REST API design, Middleware, Error handling, npm packages, Postman/Thunder Client, Environment variables, CRUD operations, HTTP methods, Status codes, MVC pattern",
+                        project: "REST API — Notes app ya URL shortener, Postman se test karo",
+                        resources: [
+                            { text: "Traversy Media — Node.js crash course (YouTube)", url: "#" },
+                            { text: "The Odin Project — NodeJS path", url: "#" },
+                            { text: "Chai aur Code — Backend series (Hindi)", url: "#" },
+                            { text: "expressjs.com docs", url: "#" }
+                        ],
+                        tip: "Pehle bina database ke in-memory data se kaam karo. MVC pattern follow karo from day 1.",
+                        schedule: [
+                            { time: "30 min", desc: "Node.js concepts revise" },
+                            { time: "1.5 hr", desc: "Express concept seekh (routes, middleware)" },
+                            { time: "2 hr", desc: "API endpoints banao, Postman se test" },
+                            { time: "30 min", desc: "GitHub commit" }
+                        ],
+                        doList: ["Express basics samajhna", "REST API design seekhna", "Postman use karna", "Status codes samajhna"],
+                        avoidList: ["No error handling", "Hardcoded data", "No environment variables", "Not testing with Postman"],
+                        selfCheck: [
+                            "Kya simple Express server bana sakta hoon?",
+                            "Kya CRUD operations implement kar sakta hoon?",
+                            "Kya Postman se API test kar sakta hoon?"
+                        ]
+                    }
+                ]
+            },
+            month5: {
+                title: "Database + Authentication",
+                subtitle: "Secure and persistent data",
+                weeks: [
+                    {
+                        number: "Full Month",
+                        title: "Database & User Authentication",
+                        topics: "MongoDB + Mongoose, SQL basics (PostgreSQL), CRUD with DB, JWT Auth, bcrypt (passwords), Sessions & Cookies, Protected routes, File uploads (Multer), Data modeling, Relationships, Security basics",
+                        project: "Full auth system — register/login/logout with JWT, user profile, protected routes",
+                        resources: [
+                            { text: "MongoDB University — free courses (mongodb.com/learn)", url: "#" },
+                            { text: "Chai aur Code — Backend with MongoDB (YouTube)", url: "#" },
+                            { text: "Traversy Media — JWT Auth tutorial", url: "#" },
+                            { text: "SQLZoo.net — SQL practice (free)", url: "#" }
+                        ],
+                        tip: "MongoDB se shuru karo. Password KABHI plain text mein save mat karo — bcrypt use karo. Security se kabhi compromise mat karo.",
+                        schedule: [
+                            { time: "30 min", desc: "Database concepts revise" },
+                            { time: "1.5 hr", desc: "MongoDB/Mongoose seekh" },
+                            { time: "2 hr", desc: "Auth system implement karo (JWT + bcrypt)" },
+                            { time: "30 min", desc: "GitHub commit" }
+                        ],
+                        doList: ["MongoDB setup aur connection", "bcrypt password hashing", "JWT tokens implement", "Protected routes banao"],
+                        avoidList: ["Plain text passwords", "No data validation", "Hardcoded sensitive data", "No environment variables"],
+                        selfCheck: [
+                            "Kya MongoDB mein CRUD kar sakta hoon?",
+                            "Kya JWT authentication implement kar sakta hoon?",
+                            "Kya password bcrypt se hash karta hoon?"
+                        ]
+                    }
+                ]
+            },
+            month6: {
+                title: "Full Project + Deployment",
+                subtitle: "Polish and launch your work",
+                weeks: [
+                    {
+                        number: "Full Month",
+                        title: "Full-Stack Integration & Deployment",
+                        topics: "Connect React + Node, CORS handling, Vercel (frontend), Render/Railway (backend), MongoDB Atlas, Environment config, GitHub Actions basics, README writing, Portfolio projects, Deployment",
+                        project: "Full-stack Blog App (MERN), E-commerce site with cart + payments (Razorpay), Real-time Chat App (Socket.io)",
+                        resources: [
+                            { text: "Vercel docs — React deploy", url: "#" },
+                            { text: "Render.com — free Node.js hosting", url: "#" },
+                            { text: "Traversy Media MERN deploy (YouTube)", url: "#" }
+                        ],
+                        tip: "Ek polished project > 5 half-finished projects. Deployed link + GitHub repo dono honi chahiye.",
+                        schedule: [
+                            { time: "30 min", desc: "Pichle 5 months revise" },
+                            { time: "2 hr", desc: "Full-stack project architecture banana" },
+                            { time: "1.5 hr", desc: "Frontend + Backend connect karna" },
+                            { time: "1 hr", desc: "Deploy karo aur final testing" }
+                        ],
+                        doList: ["Ek polished MERN project", "GitHub repo well-documented", "Deployed links live", "README file complete"],
+                        avoidList: ["Multiple half-projects", "Incomplete deployment", "No documentation", "Ignoring code quality"],
+                        selfCheck: [
+                            "Kya mera project deployed hai?",
+                            "Kya GitHub repo mein sab clear likha hai?",
+                            "Kya resume mein deployed links hain?"
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function createMonthAccordion(monthKey, monthData) {
+            const monthNum = monthKey.replace('month', '');
+            const accordion = document.createElement('div');
+            accordion.className = 'month-accordion' + (monthNum === '1' ? ' open' : '');
+            accordion.dataset.month = monthNum;
+
+            let weeksHTML = '';
+            monthData.weeks.forEach((week, idx) => {
+                weeksHTML += `
+                    <div class="week-section">
+                        <div class="week-header">
+                            <span class="week-badge">${week.number}</span>
+                            <span class="week-title">${week.title}</span>
+                        </div>
+                        <div class="topics-list">
+                            <p><strong>Topics:</strong> ${week.topics}</p>
+                        </div>
+                        <div class="project-box">
+                            <strong>📌 Project</strong>
+                            <p>${week.project}</p>
+                        </div>
+                        <div class="resources-section">
+                            <div class="resources-heading">Resources</div>
+                            <ul class="resources-list">
+                                ${week.resources.map(r => `<li><a href="${r.url}" target="_blank">${r.text}</a></li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="tip-box">
+                            <strong>💡 Tip</strong>
+                            <p>${week.tip}</p>
+                        </div>
+                        <div class="daily-schedule">
+                            <div class="schedule-title">Daily Schedule (${monthNum <= 1 ? '4' : monthNum <= 3 ? '3-5' : '3-5'} ghante)</div>
+                            <div class="schedule-timeline">
+                                ${week.schedule.map(s => `
+                                    <div class="schedule-item">
+                                        <span class="schedule-time">${s.time}</span>
+                                        <span class="schedule-description">${s.desc}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="do-avoid-section">
+                            <div class="do-list">
+                                <div class="list-title">✓ DO</div>
+                                <ul>
+                                    ${week.doList.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="avoid-list">
+                                <div class="list-title">✗ AVOID</div>
+                                <ul>
+                                    ${week.avoidList.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="self-check-section">
+                            <div class="self-check-heading">Weekly Self-Check</div>
+                            <ul class="self-check-list">
+                                ${week.selfCheck.map(check => `<li>${check}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+
+            accordion.innerHTML = `
+                <div class="month-header" data-month="${monthNum}">
+                    <div class="month-title">
+                        <div class="month-number">M${monthNum}</div>
+                        <div class="month-info">
+                            <h3>${monthData.title}</h3>
+                            <p class="month-subtitle">${monthData.subtitle}</p>
+                        </div>
+                    </div>
+                    <div class="month-toggle-icon">▼</div>
+                </div>
+                <div class="month-content">
+                    <div class="month-body">
+                        ${weeksHTML}
+                    </div>
+                </div>
+            `;
+
+            accordion.querySelector('.month-header').addEventListener('click', () => {
+                const isOpen = accordion.classList.contains('open');
+                document.querySelectorAll('.month-accordion.open').forEach(m => {
+                    m.classList.remove('open');
+                });
+                if (!isOpen) {
+                    accordion.classList.add('open');
+                    updateStickyHeader(monthNum);
+                }
+            });
+
+            return accordion;
+        }
+
+        function createRoadmapSection() {
+            const container = document.createElement('div');
+            container.className = 'roadmap-container';
+
+            const stickyHeader = document.createElement('div');
+            stickyHeader.className = 'roadmap-sticky-header';
+            stickyHeader.id = 'roadmap-sticky-header';
+            stickyHeader.textContent = '📚 Full-Stack Web Development: Month 1';
+
+            container.appendChild(stickyHeader);
+
+            const monthsContainer = document.createElement('div');
+            monthsContainer.className = 'roadmap-months';
+
+            Object.entries(FULLSTACK_ROADMAP).forEach(([key, data]) => {
+                monthsContainer.appendChild(createMonthAccordion(key, data));
+            });
+
+            container.appendChild(monthsContainer);
+            return container;
+        }
+
+        function updateStickyHeader(monthNum) {
+            const header = document.getElementById('roadmap-sticky-header');
+            if (header) {
+                const monthData = FULLSTACK_ROADMAP[`month${monthNum}`];
+                header.textContent = `📚 Full-Stack Web Development: Month ${monthNum} — ${monthData.title}`;
+            }
+        }
+
+        function initTrackRoadmap() {
+            document.querySelectorAll('.track-button-01').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const card = this.closest('.track-card');
+                    if (!card) return;
+
+                    // Check if roadmap already exists
+                    if (card.nextElementSibling && card.nextElementSibling.classList.contains('roadmap-container')) {
+                        return;
+                    }
+
+                    // Create and insert roadmap
+                    const roadmap = createRoadmapSection();
+                    card.parentNode.insertBefore(roadmap, card.nextSibling);
+
+                    // Update button
+                    this.textContent = '✓ Track Selected';
+                    this.style.cssText = `
+                        background: #10b981;
+                        color: white;
+                        cursor: default;
+                        opacity: 0.9;
+                    `;
+                    this.disabled = true;
+
+                    // Scroll to roadmap smoothly
+                    setTimeout(() => {
+                        roadmap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 300);
+
+                    // Trigger confetti on selection
+                    if (typeof confetti !== 'undefined') {
+                        confetti({
+                            particleCount: 50,
+                            spread: 60,
+                            origin: { x: 0.5, y: 0.4 },
+                            colors: ['#6C63FF', '#FF6584', '#43E8D8']
+                        });
+                    }
+
+                    showToast('Track selected! Your roadmap is ready. 🚀', 'success');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initTrackRoadmap);
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        <script src="js/streak.js"></script>
+        <script src="js/resume.js"></script>
+        <script src="js/scorecard.js"></script>
         <script type="module" src="js/app.js"></script>
-        <script src="hr-modal.js"></script>
+        <script src="js/journey-modal.js"></script>
+        <script src="js/hr-modal.js"></script>
+        <script src="js/dashboard.js"></script>
     </body>
     </html>
 

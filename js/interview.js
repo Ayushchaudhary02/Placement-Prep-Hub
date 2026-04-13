@@ -252,47 +252,38 @@ function endDSASession() {
   document.getElementById('dsa-interview-active').style.display = 'none';
   document.getElementById('dsa-results-screen').style.display = 'block';
 
-  // Calculate score
-  const ratingMap = { 'Blank': 0, 'Vague': 1, 'Partial': 2, 'Got It': 3, 'Perfect': 4 };
-  let totalScore = 0;
-  let ratedCount = 0;
-
-  Object.values(interviewState.ratings).forEach(rating => {
-    if (rating) {
-      totalScore += ratingMap[rating] || 0;
-      ratedCount++;
+  // Calculate final score
+  const RatingCounts = {};
+  Object.values(mockInterviewState.sessionAnswers).forEach(val => {
+    if (typeof val === 'string' && val.includes('_rating')) {
+      RatingCounts[val]++;
     }
   });
 
-  const avgScore = ratedCount > 0 ? Math.round((totalScore / (ratedCount * 4)) * 100) : 0;
-  interviewState.sessionScore = avgScore;
+  const totalRated = (RatingCounts['Perfect'] || 0) + (RatingCounts['Got It'] || 0);
+  const avgScore = totalRated > 0 
+    ? Math.round((((RatingCounts['Perfect'] || 0) * 100 + (RatingCounts['Got It'] || 0) * 60) / (totalRated * 100)) * 100)
+    : 0;
 
-  // Determine performance message
-  const resultsHeading = document.querySelector('.results-heading');
-  if (avgScore >= 80) {
-    resultsHeading.textContent = '🎉 Outstanding Performance!';
-  } else if (avgScore >= 60) {
-    resultsHeading.textContent = '💪 Good Job!';
-  } else if (avgScore >= 40) {
-    resultsHeading.textContent = '📚 Keep Practicing!';
-  } else {
-    resultsHeading.textContent = '🚀 Keep Learning!';
-  }
-
-  // Update score display
-  document.querySelector('.score-percentage').textContent = `${avgScore}%`;
-
-  // Save session
-  const session = {
-    date: new Date().toISOString(),
+  // Save session data to sessionStorage for PDF export
+  const sessionData = {
+    date: new Date().toLocaleDateString(),
     score: avgScore,
-    company: interviewState.company,
-    difficulty: interviewState.difficulty,
-    questionsAttempted: interviewState.questions.length,
-    hintsUsed: 0
+    company: mockInterviewState.selectedCompany,
+    difficulty: mockInterviewState.selectedDifficulty,
+    questionsAttempted: mockInterviewState.sessionQuestions.length,
+    hintsUsed: 0,
+    timeTaken: Date.now() - mockInterviewState.sessionStartTime,
+    questions: mockInterviewState.sessionQuestions.map((q, idx) => ({
+      title: q.question,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      company: q.companies ? q.companies[0] : '',
+      rating: mockInterviewState.sessionAnswers[q.id + '_rating'] || 'N/A'
+    }))
   };
 
-  saveMockSession(session);
+  sessionStorage.setItem('preppath_current_session', JSON.stringify(sessionData));
 
   // Show stats
   const ratingCounts = {
@@ -308,6 +299,37 @@ function endDSASession() {
   statBoxes[1].innerHTML = `<div class="stat-value">${ratingCounts.gotIt}</div><div class="stat-name">Got It</div>`;
   statBoxes[2].innerHTML = `<div class="stat-value">${ratingCounts.partial}</div><div class="stat-name">Partial</div>`;
   statBoxes[3].innerHTML = `<div class="stat-value">${ratingCounts.vague}</div><div class="stat-name">Vague</div>`;
+
+  // Add download button to action buttons
+  const actionButtonsContainer = document.querySelector('.action-buttons');
+  if (actionButtonsContainer && !document.getElementById('download-scorecard-btn')) {
+    const downloadBtn = document.createElement('button');
+    downloadBtn.id = 'download-scorecard-btn';
+    downloadBtn.className = 'btn-primary';
+    downloadBtn.textContent = '📄 Download Scorecard PDF';
+    downloadBtn.style.cssText = `
+      background: linear-gradient(135deg, #6C63FF, #FF6584);
+      padding: 0.9rem 1.8rem;
+      margin: 0 0.5rem;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    `;
+    downloadBtn.addEventListener('mouseover', function() {
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = '0 6px 20px rgba(108, 99, 255, 0.3)';
+    });
+    downloadBtn.addEventListener('mouseout', function() {
+      this.style.transform = 'translateY(0)';
+      this.style.boxShadow = 'none';
+    });
+    downloadBtn.addEventListener('click', downloadScorecard);
+    actionButtonsContainer.insertBefore(downloadBtn, actionButtonsContainer.firstChild);
+  }
 
   showToast(`Interview Complete! Score: ${avgScore}%`, 'success');
 }
@@ -593,4 +615,65 @@ function loadSessionHistory() {
       </div>
     `;
   }
+}
+
+function downloadScorecard() {
+  const session = {
+    date: new Date().toLocaleDateString(),
+    score: interviewState.sessionScore,
+    company: interviewState.company,
+    difficulty: interviewState.difficulty,
+    questionsAttempted: interviewState.questions.length,
+    hintsUsed: 0,
+    timeTaken: (Date.now() - interviewState.sessionStartTime) / 1000,
+    questions: interviewState.questions.map(q => ({
+      title: q.question,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      company: q.companies ? q.companies[0] : '',
+      rating: interviewState.ratings[q.id] || 'N/A'
+    }))
+  };
+
+  const pdfContent = `
+    <h1>Interview Scorecard</h1>
+    <p><strong>Date:</strong> ${session.date}</p>
+    <p><strong>Company:</strong> ${session.company}</p>
+    <p><strong>Difficulty:</strong> ${session.difficulty}</p>
+    <p><strong>Score:</strong> ${session.score}%</p>
+    <p><strong>Questions Attempted:</strong> ${session.questionsAttempted}</p>
+    <p><strong>Time Taken:</strong> ${formatTime(session.timeTaken)}</p>
+    <h2>Question Breakdown</h2>
+    <table>
+      <tr>
+        <th>Question</th>
+        <th>Topic</th>
+        <th>Difficulty</th>
+        <th>Company</th>
+        <th>Rating</th>
+      </tr>
+      ${session.questions.map(q => `
+        <tr>
+          <td>${q.title}</td>
+          <td>${q.topic}</td>
+          <td>${q.difficulty}</td>
+          <td>${q.companies ? q.companies[0] : ''}</td>
+          <td>${q.rating}</td>
+        </tr>
+      `).join('')}
+    </table>
+  `;
+
+  const blob = new Blob([pdfContent], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `scorecard_${session.date}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('Scorecard downloaded!', 'success');
 }

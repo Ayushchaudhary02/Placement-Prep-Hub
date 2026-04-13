@@ -1,3 +1,27 @@
+console.log('progress.js loaded');
+
+function saveProgress(key, value) {
+  try {
+    localStorage.setItem('preppath_' + key, JSON.stringify(value));
+  } catch (error) {
+    console.error('Error saving progress:', error);
+  }
+}
+
+function loadProgress(key, defaultValue) {
+  try {
+    const saved = localStorage.getItem('preppath_' + key);
+    return saved !== null ? JSON.parse(saved) : defaultValue;
+  } catch (error) {
+    console.error('Error loading progress:', error);
+    return defaultValue;
+  }
+}
+
+// Export for use in other modules
+window.saveProgress = saveProgress;
+window.loadProgress = loadProgress;
+
 const PREFIX = 'preppath_';
 
 // ========== DSA PROGRESS ==========

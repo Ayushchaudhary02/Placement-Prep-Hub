@@ -1,0 +1,748 @@
+/* ========== ROADMAP CONTAINER ========== */
+.roadmap-container {
+  animation: slideDown 0.5s ease forwards;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(108, 99, 255, 0.15);
+  overflow: hidden;
+  margin-top: 24px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== HERO BANNER ========== */
+.roadmap-hero {
+  background: linear-gradient(135deg, #6C63FF 0%, #3B82F6 50%, #8B5CF6 100%);
+  padding: 32px 28px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.roadmap-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.roadmap-hero h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.roadmap-hero p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin: 0 0 16px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+/* ========== MONTH PROGRESS DOTS ========== */
+.month-dots {
+  display: flex;
+  gap: 0;
+  background: #f8f8ff;
+  padding: 16px 28px;
+  border-bottom: 1px solid #eee;
+  justify-content: space-around;
+}
+
+.month-dot-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.month-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  background: transparent;
+  transition: all 0.3s ease;
+  color: inherit;
+}
+
+.month-dot.active {
+  background: currentColor;
+  box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.2);
+}
+
+.month-dot-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Month colors */
+.month-1 { color: #3B82F6; }
+.month-2 { color: #7C3AED; }
+.month-3 { color: #059669; }
+.month-4 { color: #D97706; }
+.month-5 { color: #DC2626; }
+.month-6 { color: #DB2777; }
+
+/* ========== MONTH ACCORDION CARDS ========== */
+.month-card {
+  border-left: 4px solid var(--month-color);
+  border-bottom: 1px solid #f0f0f0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.month-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.month-header:hover {
+  background: rgba(108, 99, 255, 0.03);
+}
+
+.month-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--month-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.2);
+}
+
+.month-title-group {
+  flex: 1;
+}
+
+.month-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--month-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.month-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 2px 0 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.month-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.month-weeks-badge {
+  background: #f0f0f0;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+}
+
+.chevron {
+  font-size: 12px;
+  color: #aaa;
+  transition: transform 0.3s ease;
+}
+
+.month-card.open .chevron {
+  transform: rotate(180deg);
+}
+
+/* ========== MONTH BODY ========== */
+.month-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 24px;
+}
+
+.month-card.open .month-body {
+  max-height: 2500px;
+  padding: 0 24px 24px;
+}
+
+/* ========== WEEK TABS ========== */
+.week-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 14px;
+  flex-wrap: wrap;
+}
+
+.week-tab {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1.5px solid var(--month-color);
+  color: var(--month-color);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.week-tab:hover {
+  background: rgba(108, 99, 255, 0.05);
+}
+
+.week-tab.active {
+  background: var(--month-color);
+  color: white;
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.2);
+}
+
+/* ========== WEEK PANELS ========== */
+.week-panel {
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.week-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.week-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.week-subtitle {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 12px;
+}
+
+/* ========== TOPIC PILLS ========== */
+.topics-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.topic-pill {
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(108, 99, 255, 0.08);
+  color: rgba(108, 99, 255, 0.8);
+  border: 1px solid rgba(108, 99, 255, 0.15);
+  transition: all 0.2s ease;
+}
+
+.topic-pill:hover {
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.3);
+}
+
+/* ========== PROJECT BOX ========== */
+.project-box {
+  border-left: 3px solid var(--month-color);
+  background: rgba(108, 99, 255, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  transition: all 0.2s ease;
+}
+
+.project-box:hover {
+  background: rgba(108, 99, 255, 0.08);
+}
+
+.project-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--month-color);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+
+.project-text {
+  font-size: 13px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ========== RESOURCES LIST ========== */
+.resources-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.resources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+}
+
+.resources-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.resources-list li:last-child {
+  border-bottom: none;
+}
+
+.res-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--month-color);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.resources-list a {
+  color: var(--month-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.resources-list a:hover {
+  text-decoration: underline;
+  color: #FF6584;
+}
+
+/* ========== TIP BOX ========== */
+.tip-box {
+  background: #FFFBEB;
+  border-left: 3px solid #F59E0B;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #92400E;
+  line-height: 1.5;
+}
+
+/* ========== DAILY SCHEDULE ========== */
+.schedule-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.daily-schedule {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: #f8f8ff;
+  border-radius: 12px;
+  padding: 0;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.schedule-block {
+  flex: 1;
+  text-align: center;
+  min-width: 80px;
+  padding: 14px 10px;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.schedule-block:last-child {
+  border-right: none;
+}
+
+.schedule-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--month-color);
+}
+
+.schedule-label-inner {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.schedule-desc {
+  font-size: 10px;
+  color: #888;
+  line-height: 1.3;
+}
+
+/* ========== DO / AVOID GRID ========== */
+.do-avoid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.do-card,
+.avoid-card {
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 0.5px solid #e0e0e0;
+}
+
+.do-card {
+  background: #F0FDF4;
+}
+
+.avoid-card {
+  background: #FEF2F2;
+}
+
+.do-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #16A34A;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.avoid-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #DC2626;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.do-item,
+.avoid-item {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  padding: 2px 0;
+  color: #333;
+}
+
+.do-dot-sm,
+.avoid-dot-sm {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.do-dot-sm {
+  background: #16A34A;
+}
+
+.avoid-dot-sm {
+  background: #DC2626;
+}
+
+/* ========== WEEKLY SELF-CHECK ========== */
+.self-check {
+  margin-top: 4px;
+  padding: 12px;
+  background: #f8f8ff;
+  border-radius: 10px;
+}
+
+.self-check-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.check-item:hover {
+  opacity: 0.8;
+}
+
+.check-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+
+.check-item.checked .check-circle {
+  background: #16A34A;
+  border-color: #16A34A;
+}
+
+.check-item.checked .check-text {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.check-text {
+  font-size: 13px;
+  color: #444;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.check-counter {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .roadmap-container {
+    border-radius: 12px;
+    margin: 16px;
+  }
+
+  .roadmap-hero {
+    padding: 24px 20px;
+  }
+
+  .roadmap-hero h2 {
+    font-size: 20px;
+  }
+
+  .hero-stats {
+    gap: 8px;
+  }
+
+  .hero-stat {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .month-dots {
+    padding: 12px 16px;
+  }
+
+  .month-header {
+    padding: 14px 18px;
+    flex-wrap: wrap;
+  }
+
+  .month-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .month-title {
+    font-size: 15px;
+  }
+
+  .month-title-group {
+    flex: 1 0 100%;
+  }
+
+  .month-body {
+    padding: 0 18px;
+  }
+
+  .month-card.open .month-body {
+    padding: 0 18px 18px;
+  }
+
+  .do-avoid-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .daily-schedule {
+    overflow-x: auto;
+  }
+
+  .schedule-block {
+    min-width: 70px;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .schedule-time {
+    font-size: 11px;
+  }
+
+  .schedule-label-inner {
+    font-size: 10px;
+  }
+
+  .schedule-desc {
+    font-size: 9px;
+  }
+
+  .month-weeks-badge {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .roadmap-container {
+    margin: 12px;
+    border-radius: 12px;
+  }
+
+  .roadmap-hero {
+    padding: 18px 16px;
+  }
+
+  .roadmap-hero h2 {
+    font-size: 18px;
+  }
+
+  .roadmap-hero p {
+    font-size: 12px;
+  }
+
+  .hero-stats {
+    gap: 6px;
+  }
+
+  .hero-stat {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+
+  .month-header {
+    padding: 12px 14px;
+  }
+
+  .month-title {
+    font-size: 14px;
+  }
+
+  .month-body {
+    padding: 0 14px;
+  }
+
+  .month-card.open .month-body {
+    padding: 0 14px 14px;
+  }
+
+  .week-tabs {
+    gap: 6px;
+  }
+
+  .week-tab {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .topics-wrap {
+    gap: 4px;
+  }
+
+  .topic-pill {
+    padding: 3px 9px;
+    font-size: 10px;
+  }
+}
